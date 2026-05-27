@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>EV Speare Inbound Store</title>
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -19,12 +19,12 @@
       </form>
     </section>
     <header class="bar">
-      <div><strong>EV Speare</strong><span>Inbound Customer</span></div>
+      <div class="brand"><strong>EV Speare</strong><span>Inbound Customer</span></div>
       <nav>
-        <button data-view-button="shop" class="active">Shop</button>
-        <button data-view-button="orders">Orders</button>
-        <button data-cart-button>Cart <em data-cart-count>0</em></button>
-        <button data-logout>Logout</button>
+        <button data-view-button="shop" class="active"><i>Shop</i></button>
+        <button data-view-button="orders"><i>Orders</i></button>
+        <button data-cart-button><i>Cart</i> <em data-cart-count>0</em></button>
+        <button class="logout" data-logout><i>Logout</i></button>
       </nav>
     </header>
     <main>
@@ -37,17 +37,18 @@
         <div class="offer">20%<small>FIXED DISCOUNT</small></div>
       </section>
       <section data-view="shop">
-        <div class="section-head"><h2>Products</h2><input data-search type="search" placeholder="Search name or SKU"></div>
+        <div class="section-head catalog-head"><h2>Products</h2><input data-search type="search" placeholder="Search name or SKU"></div>
         <div class="products" data-products></div>
       </section>
       <section class="hidden" data-view="orders">
-        <div class="section-head"><h2>Orders And Invoices</h2><button data-refresh-orders>Refresh</button></div>
+        <div class="section-head orders-head"><h2>Orders And Invoices</h2><button data-refresh-orders>Refresh</button></div>
         <div class="orders" data-orders></div>
       </section>
     </main>
     <aside class="cart hidden" data-cart>
       <div class="shade" data-close-cart></div>
-      <section>
+      <section class="cart-panel">
+        <div class="cart-grip" aria-hidden="true"></div>
         <div class="section-head"><h2>Your Cart</h2><button data-close-cart>Close</button></div>
         <div data-cart-items></div>
         <div class="totals" data-totals></div>

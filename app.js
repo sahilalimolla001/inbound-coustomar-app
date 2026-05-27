@@ -129,7 +129,7 @@ async function checkout(event) {
     state.cart.clear();
     persistCart();
     renderCart();
-    $("[data-cart]").classList.add("hidden");
+    toggleCart(false);
     await loadOrders();
     showView("orders");
     toast(`Order ${data.order.order_number} placed and invoice saved`);
@@ -153,6 +153,11 @@ function showView(name) {
   document.querySelectorAll("[data-view-button]").forEach((node) => node.classList.toggle("active", node.dataset.viewButton === name));
 }
 
+function toggleCart(open) {
+  $("[data-cart]").classList.toggle("hidden", !open);
+  document.body.classList.toggle("cart-open", open);
+}
+
 document.addEventListener("click", (event) => {
   const add = event.target.closest("[data-add]");
   const plus = event.target.closest("[data-plus]");
@@ -168,8 +173,8 @@ document.addEventListener("click", (event) => {
     if (qty > 0) state.cart.set(id, qty); else state.cart.delete(id);
     persistCart(); renderCart();
   }
-  if (event.target.closest("[data-cart-button]")) $("[data-cart]").classList.remove("hidden");
-  if (event.target.closest("[data-close-cart]")) $("[data-cart]").classList.add("hidden");
+  if (event.target.closest("[data-cart-button]")) toggleCart(true);
+  if (event.target.closest("[data-close-cart]")) toggleCart(false);
   const view = event.target.closest("[data-view-button]");
   if (view) showView(view.dataset.viewButton);
   const invoice = event.target.closest("[data-invoice]");
