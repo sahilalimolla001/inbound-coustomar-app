@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EV Speare Inbound Store</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <section class="login" data-login>
+      <form class="login-card" data-login-form>
+        <p class="tag">Inbound Customer Store</p>
+        <h1>Wholesale access</h1>
+        <p class="muted">Use the login ID issued from the central panel.</p>
+        <label>Login ID / Email<input name="email" type="email" required></label>
+        <label>Password<input name="password" type="password" required></label>
+        <button class="primary">Login</button>
+        <p class="error" data-login-error></p>
+      </form>
+    </section>
+    <header class="bar">
+      <div><strong>EV Speare</strong><span>Inbound Customer</span></div>
+      <nav>
+        <button data-view-button="shop" class="active">Shop</button>
+        <button data-view-button="orders">Orders</button>
+        <button data-cart-button>Cart <em data-cart-count>0</em></button>
+        <button data-logout>Logout</button>
+      </nav>
+    </header>
+    <main>
+      <section class="hero">
+        <div>
+          <p class="tag">Dedicated inbound pricing</p>
+          <h1>All products at 20% off</h1>
+          <p>Choose products, place your order and receive an invoice instantly. Fulfilment is handled directly by your mapped warehouse.</p>
+        </div>
+        <div class="offer">20%<small>FIXED DISCOUNT</small></div>
+      </section>
+      <section data-view="shop">
+        <div class="section-head"><h2>Products</h2><input data-search type="search" placeholder="Search name or SKU"></div>
+        <div class="products" data-products></div>
+      </section>
+      <section class="hidden" data-view="orders">
+        <div class="section-head"><h2>Orders And Invoices</h2><button data-refresh-orders>Refresh</button></div>
+        <div class="orders" data-orders></div>
+      </section>
+    </main>
+    <aside class="cart hidden" data-cart>
+      <div class="shade" data-close-cart></div>
+      <section>
+        <div class="section-head"><h2>Your Cart</h2><button data-close-cart>Close</button></div>
+        <div data-cart-items></div>
+        <div class="totals" data-totals></div>
+        <form data-checkout-form>
+          <label>Delivery Address<textarea name="address" rows="3" required></textarea></label>
+          <label>Payment Method
+            <select name="payment">
+              <option value="cod">Cash on delivery</option>
+              <option value="upi">UPI (confirm in warehouse)</option>
+              <option value="card">Card (confirm in warehouse)</option>
+              <option value="bank_transfer">Bank transfer</option>
+            </select>
+          </label>
+          <label>Payment Reference (optional)<input name="reference" placeholder="UTR / receipt ID"></label>
+          <button class="primary" type="submit">Place Order</button>
+        </form>
+      </section>
+    </aside>
+    <div class="toast" data-toast></div>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

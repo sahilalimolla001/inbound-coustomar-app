@@ -1,0 +1,33 @@
+:root { --green:#087f5b; --green2:#e6fcf5; --ink:#172b27; --muted:#63736d; --line:#d9e5e0; --bg:#f5f8f5; }
+* { box-sizing:border-box; } body { margin:0; font:14px Arial,sans-serif; color:var(--ink); background:var(--bg); }
+button,input,textarea,select { font:inherit; } button { border:1px solid var(--line); background:#fff; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:bold; }
+.primary { background:var(--green); border-color:var(--green); color:#fff; }
+.bar { display:flex; justify-content:space-between; align-items:center; gap:18px; padding:15px max(calc((100% - 1180px)/2),18px); background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:3; }
+.bar strong { display:block; font-size:21px; color:var(--green); } .bar span,.muted { color:var(--muted); } nav { display:flex; gap:8px; flex-wrap:wrap; } nav .active { background:var(--green2); color:var(--green); }
+nav em { font-style:normal; background:var(--green); color:#fff; padding:2px 7px; border-radius:20px; }
+main { max-width:1180px; margin:auto; padding:22px 18px 50px; }
+.hero { background:linear-gradient(110deg,#083d32,#087f5b); color:#fff; border-radius:22px; padding:34px; display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
+.hero h1 { margin:7px 0; font-size:clamp(28px,4vw,42px); } .hero p { max-width:600px; line-height:1.5; }
+.tag { text-transform:uppercase; font-weight:bold; font-size:12px; letter-spacing:.12em; color:#46d4ab; margin:0; }
+.offer { background:#fff; color:var(--green); padding:24px; min-width:155px; text-align:center; border-radius:18px; font-size:50px; font-weight:bold; } .offer small { display:block;font-size:11px; }
+.section-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; } h2 { margin:0; }
+.section-head input { width:min(300px,50vw); }
+input,textarea,select { width:100%; border:1px solid var(--line); border-radius:9px; padding:11px; background:#fff; }
+.products { display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:15px; }
+.product,.order { background:#fff; border:1px solid var(--line); border-radius:15px; padding:14px; }
+.product img { width:100%; height:150px; object-fit:contain; background:#f4f6f4; border-radius:10px; }
+.product h3 { margin:12px 0 5px; min-height:38px; } .price { color:var(--green); font-size:21px; font-weight:bold; }
+.old { color:var(--muted); text-decoration:line-through; margin-left:8px; } .badge { background:var(--green2); color:var(--green); padding:4px 7px; border-radius:7px; font-size:12px; }
+.product button { width:100%; margin-top:12px; }
+.orders { display:grid; gap:12px; } .order-head { display:flex; justify-content:space-between; gap:8px; margin-bottom:10px; }
+.lines { color:var(--muted); line-height:1.8; } .actions { display:flex; gap:8px; margin-top:10px; }
+.cart { position:fixed; inset:0; z-index:4; display:flex; justify-content:flex-end; } .shade { position:absolute; inset:0; background:#0008; }
+.cart section { position:relative; width:min(440px,100%); background:#fff; padding:20px; overflow:auto; }
+.cart-line { display:grid; grid-template-columns:1fr auto; gap:8px; padding:12px 0; border-bottom:1px solid var(--line); }
+.cart-line button { padding:4px 9px; } .totals { margin:18px 0; padding:14px; background:var(--green2); line-height:2; }
+.totals div { display:flex; justify-content:space-between; } form { display:grid; gap:13px; } label { display:grid; gap:6px; font-weight:bold; }
+.login { position:fixed; inset:0; background:#07352c; z-index:8; display:grid; place-items:center; padding:18px; }
+.login-card { width:min(400px,100%); background:#fff; border-radius:18px; padding:28px; } .login-card h1 { margin:8px 0; }
+.login-card .tag { color:var(--green); } .error { color:#bd2323; min-height:16px; }
+.hidden { display:none !important; } .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#172b27; color:#fff; padding:12px 18px; border-radius:10px; opacity:0; pointer-events:none; transition:.2s; z-index:10; }
+.toast.show { opacity:1; } @media(max-width:650px) { .hero { padding:22px; } .offer { display:none; } .bar { align-items:flex-start; flex-direction:column; } }
