@@ -210,11 +210,15 @@ body { background:linear-gradient(180deg,#edf5ff 0%,#f7f9fc 34%,#eef2f7 100%); }
   .account { min-height:33px; }
   .bar nav {
     position:fixed;
+    z-index:20;
     top:auto;
     right:0;
     margin:0;
     grid-template-columns:repeat(3,1fr);
   }
+  .bar nav button { color:var(--muted); background:#fff; }
+  .bar nav .active { color:var(--blue); background:#edf5ff; }
+  .bar nav em { color:var(--ink); background:var(--yellow); }
   .search { height:44px; margin-top:11px; }
   .delivery { margin-top:9px; padding:9px 10px; display:grid; gap:2px; }
   main { padding-top:12px; }
