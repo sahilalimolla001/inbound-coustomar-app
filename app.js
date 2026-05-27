@@ -33,6 +33,27 @@ function persistCart() {
   localStorage.setItem("inbound.cart", JSON.stringify([...state.cart.entries()]));
 }
 
+function availableStock(product) {
+  return Math.max(0, Number(product?.available_quantity || 0));
+}
+
+function reconcileCartStock() {
+  let adjusted = false;
+  for (const [id, quantity] of state.cart.entries()) {
+    const product = state.products.find((item) => String(item.id) === String(id));
+    const maximum = availableStock(product);
+    if (!product || maximum < 1) {
+      state.cart.delete(id);
+      adjusted = true;
+    } else if (quantity > maximum) {
+      state.cart.set(id, maximum);
+      adjusted = true;
+    }
+  }
+  if (adjusted) persistCart();
+  return adjusted;
+}
+
 function totals() {
   const items = [...state.cart.entries()].map(([id, quantity]) => ({ ...state.products.find((product) => String(product.id) === String(id)), quantity })).filter((item) => item.id);
   const regular = items.reduce((sum, item) => sum + item.regular_price * item.quantity, 0);
@@ -60,8 +81,10 @@ async function login(event) {
 async function loadProducts() {
   const data = await request("/inbound/catalog");
   state.products = data.products || [];
+  const cartAdjusted = reconcileCartStock();
   renderProducts();
   renderCart();
+  if (cartAdjusted) toast("Cart quantity current stock ke hisaab se update ho gayi.");
 }
 
 async function loadOrders() {
@@ -73,16 +96,20 @@ async function loadOrders() {
 function renderProducts() {
   const query = $("[data-search]").value.trim().toLowerCase();
   const products = state.products.filter((item) => !query || `${item.name} ${item.sku}`.toLowerCase().includes(query));
-  $("[data-products]").innerHTML = products.map((item) => `
+  $("[data-products]").innerHTML = products.map((item) => {
+    const quantity = state.cart.get(String(item.id)) || 0;
+    const atLimit = quantity >= availableStock(item);
+    return `
     <article class="product">
       ${item.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="">` : `<div class="badge">Stock available</div>`}
       <h3>${escapeHtml(item.name)}</h3>
       <p><code>${escapeHtml(item.sku)}</code> / ${item.available_quantity} in stock</p>
       <span class="price">${money(item.inbound_price)}</span><span class="old">${money(item.regular_price)}</span>
       <p><span class="badge">20% off</span></p>
-      <button class="primary" data-add="${item.id}">Add To Cart</button>
+      <button class="primary" data-add="${item.id}" ${atLimit ? "disabled" : ""}>${atLimit ? "Stock limit reached" : "Add To Cart"}</button>
     </article>
-  `).join("") || "<p>No products found.</p>";
+  `;
+  }).join("") || "<p>No products found.</p>";
 }
 
 function renderCart() {
@@ -91,7 +118,7 @@ function renderCart() {
   $("[data-cart-items]").innerHTML = summary.items.map((item) => `
     <div class="cart-line">
       <div><strong>${escapeHtml(item.name)}</strong><br>${money(item.inbound_price)} x ${item.quantity}</div>
-      <div><button data-minus="${item.id}">-</button> <button data-plus="${item.id}">+</button></div>
+      <div><button data-minus="${item.id}">-</button> <button data-plus="${item.id}" ${item.quantity >= availableStock(item) ? "disabled" : ""}>+</button></div>
     </div>
   `).join("") || "<p>Your cart is empty.</p>";
   $("[data-totals]").innerHTML = `
@@ -164,14 +191,20 @@ document.addEventListener("click", (event) => {
   const minus = event.target.closest("[data-minus]");
   if (add || plus) {
     const id = String((add || plus).dataset.add || plus.dataset.plus);
-    state.cart.set(id, (state.cart.get(id) || 0) + 1);
-    persistCart(); renderCart(); toast("Added to cart");
+    const product = state.products.find((item) => String(item.id) === id);
+    const nextQuantity = (state.cart.get(id) || 0) + 1;
+    if (!product || nextQuantity > availableStock(product)) {
+      toast(`Sirf ${availableStock(product)} quantity stock mein available hai.`);
+      return;
+    }
+    state.cart.set(id, nextQuantity);
+    persistCart(); renderCart(); renderProducts(); toast("Added to cart");
   }
   if (minus) {
     const id = String(minus.dataset.minus);
     const qty = (state.cart.get(id) || 0) - 1;
     if (qty > 0) state.cart.set(id, qty); else state.cart.delete(id);
-    persistCart(); renderCart();
+    persistCart(); renderCart(); renderProducts();
   }
   if (event.target.closest("[data-cart-button]")) toggleCart(true);
   if (event.target.closest("[data-close-cart]")) toggleCart(false);
