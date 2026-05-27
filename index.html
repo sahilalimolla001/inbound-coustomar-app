@@ -19,25 +19,36 @@
       </form>
     </section>
     <header class="bar">
-      <div class="brand"><strong>EV Speare</strong><span>Inbound Customer</span></div>
+      <div class="brand-row">
+        <div class="brand"><strong>EV Speare</strong><span>Inbound wholesale store</span></div>
+        <button class="account" data-logout>Logout</button>
+      </div>
+      <label class="search"><span aria-hidden="true">&#128269;</span><input data-search type="search" placeholder="Search EV spare parts"></label>
+      <div class="delivery"><strong>Warehouse fulfilment</strong><span>Live stock / invoice ready / local delivery</span></div>
       <nav>
         <button data-view-button="shop" class="active"><i>Shop</i></button>
         <button data-view-button="orders"><i>Orders</i></button>
         <button data-cart-button><i>Cart</i> <em data-cart-count>0</em></button>
-        <button class="logout" data-logout><i>Logout</i></button>
       </nav>
     </header>
     <main>
       <section class="hero">
         <div>
-          <p class="tag">Dedicated inbound pricing</p>
-          <h1>All products at 20% off</h1>
-          <p>Choose products, place your order and receive an invoice instantly. Fulfilment is handled directly by your mapped warehouse.</p>
+          <p class="tag">Inbound exclusive</p>
+          <h1>Wholesale deals</h1>
+          <p>Shop live warehouse stock with fixed 20% savings and instant invoices.</p>
         </div>
-        <div class="offer">20%<small>FIXED DISCOUNT</small></div>
+        <div class="offer">20%<small>OFF EVERY ITEM</small></div>
       </section>
       <section data-view="shop">
-        <div class="section-head catalog-head"><h2>Products</h2><input data-search type="search" placeholder="Search name or SKU"></div>
+        <div class="highlights">
+          <article><span>Live stock</span><strong data-stock-count>--</strong></article>
+          <article><span>Your price</span><strong>20% off</strong></article>
+          <article><span>Billing</span><strong>Invoice</strong></article>
+        </div>
+        <div class="section-head category-head"><h2>Shop by category</h2><button data-clear-category>All</button></div>
+        <div class="categories" data-categories></div>
+        <div class="section-head catalog-head"><h2>Recommended for you</h2><span class="muted">Live warehouse products</span></div>
         <div class="products" data-products></div>
       </section>
       <section class="hidden" data-view="orders">

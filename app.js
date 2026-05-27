@@ -5,6 +5,7 @@ const state = {
   products: [],
   cart: new Map(JSON.parse(localStorage.getItem("inbound.cart") || "[]")),
   orders: [],
+  category: "All",
 };
 const $ = (selector) => document.querySelector(selector);
 const money = (value) => `Rs. ${Number(value || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -82,6 +83,7 @@ async function loadProducts() {
   const data = await request("/inbound/catalog");
   state.products = data.products || [];
   const cartAdjusted = reconcileCartStock();
+  renderCategories();
   renderProducts();
   renderCart();
   if (cartAdjusted) toast("Cart quantity current stock ke hisaab se update ho gayi.");
@@ -93,9 +95,30 @@ async function loadOrders() {
   renderOrders();
 }
 
+function productCategory(product) {
+  return String(product.category || product.product_category || "Parts").trim() || "Parts";
+}
+
+function renderCategories() {
+  const named = [...new Set(state.products.map(productCategory))];
+  const categories = ["All", "20% Off", ...named];
+  if (!categories.includes(state.category)) state.category = "All";
+  $("[data-stock-count]").textContent = state.products.length;
+  $("[data-categories]").innerHTML = categories.map((category) => `
+    <button class="category ${state.category === category ? "active" : ""}" data-category="${escapeHtml(category)}">
+      <strong>${escapeHtml(category)}</strong>
+      <span>${category === "All" ? "Browse all" : category === "20% Off" ? "Deals" : "Products"}</span>
+    </button>
+  `).join("");
+}
+
 function renderProducts() {
   const query = $("[data-search]").value.trim().toLowerCase();
-  const products = state.products.filter((item) => !query || `${item.name} ${item.sku}`.toLowerCase().includes(query));
+  const products = state.products.filter((item) => {
+    const matchesQuery = !query || `${item.name} ${item.sku}`.toLowerCase().includes(query);
+    const matchesCategory = state.category === "All" || state.category === "20% Off" || productCategory(item) === state.category;
+    return matchesQuery && matchesCategory;
+  });
   $("[data-products]").innerHTML = products.map((item) => {
     const quantity = state.cart.get(String(item.id)) || 0;
     const atLimit = quantity >= availableStock(item);
@@ -103,7 +126,7 @@ function renderProducts() {
     <article class="product">
       ${item.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="">` : `<div class="badge">Stock available</div>`}
       <h3>${escapeHtml(item.name)}</h3>
-      <p><code>${escapeHtml(item.sku)}</code> / ${item.available_quantity} in stock</p>
+      <p class="sku"><code>${escapeHtml(item.sku)}</code> / ${item.available_quantity} in stock</p>
       <span class="price">${money(item.inbound_price)}</span><span class="old">${money(item.regular_price)}</span>
       <p><span class="badge">20% off</span></p>
       <button class="primary" data-add="${item.id}" ${atLimit ? "disabled" : ""}>${atLimit ? "Stock limit reached" : "Add To Cart"}</button>
@@ -210,6 +233,17 @@ document.addEventListener("click", (event) => {
   if (event.target.closest("[data-close-cart]")) toggleCart(false);
   const view = event.target.closest("[data-view-button]");
   if (view) showView(view.dataset.viewButton);
+  const category = event.target.closest("[data-category]");
+  if (category) {
+    state.category = category.dataset.category;
+    renderCategories();
+    renderProducts();
+  }
+  if (event.target.closest("[data-clear-category]")) {
+    state.category = "All";
+    renderCategories();
+    renderProducts();
+  }
   const invoice = event.target.closest("[data-invoice]");
   if (invoice) downloadInvoice(state.orders.find((order) => String(order.id) === invoice.dataset.invoice));
   if (event.target.closest("[data-logout]")) {
